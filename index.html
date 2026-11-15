@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#161925">
+  <meta name="description" content="点一点小猪、披萨和圣诞树，看看雪夜小屋里的冷冰冰值。">
+  <title>披萨no！和秋日番的冷冰冰记仇屋</title>
+  <link rel="stylesheet" href="./style.css">
+  <link rel="icon" type="image/png" href="./game-logo.png">
+</head>
+<body>
+  <section class="welcome shell" id="welcome" aria-labelledby="welcome-title">
+    <div class="welcome-panel">
+      <p class="welcome-label">欢迎来到</p>
+      <h1 class="welcome-logo" id="welcome-title">
+        <img src="./game-logo.png" width="212" height="212" alt="冷冰冰记仇屋">
+        <span>披萨no！和秋日番</span>
+      </h1>
+      <form id="identity-form" class="identity-form">
+        <fieldset>
+          <legend>请选择你的身份</legend>
+          <div class="identity-options">
+            <label class="identity-card"><input type="radio" name="identity" value="pig" required><span class="avatar avatar-pig" aria-hidden="true"></span><span>秋日番</span></label>
+            <label class="identity-card"><input type="radio" name="identity" value="pizza" required><span class="avatar avatar-pizza" aria-hidden="true"></span><span>披萨no！</span></label>
+          </div>
+        </fieldset>
+        <label for="nickname">你的昵称</label>
+        <input id="nickname" name="nickname" type="text" placeholder="怎么称呼你？" maxlength="20" autocomplete="nickname" required>
+        <button type="submit" class="warm-button">开始使用 <span aria-hidden="true">▸</span></button>
+      </form>
+    </div>
+  </section>
+  <main class="shell" id="house" hidden>
+    <header class="room-heading">
+      <div class="room-brand">
+        <img src="./game-logo.png" width="54" height="54" alt="">
+        <div>
+          <p class="names">披萨no！<span>和</span>秋日番</p>
+          <h1>冷冰冰记仇屋</h1>
+        </div>
+      </div>
+      <div class="room-tools">
+        <button type="button" id="toggle-sound" aria-pressed="false">开启声音</button>
+        <button type="button" id="change-identity" aria-label="切换身份"></button>
+      </div>
+      <div class="frost-meter" aria-live="polite">
+        <span aria-hidden="true">❄</span><span>今日冷冰冰值</span><strong id="meter">0</strong>
+      </div>
+    </header>
+
+    <section class="room" id="room" aria-label="雪夜小屋，内有小猪、披萨、篝火和圣诞树">
+      <div class="cabin-art" aria-hidden="true"></div>
+      <div class="snow" id="snow" aria-hidden="true"></div>
+      <div class="fire-out-art" aria-hidden="true"></div>
+      <div class="hearth-glow" aria-hidden="true"></div>
+      <time class="wall-clock" id="wall-clock" aria-label="现在的时间">
+        <span class="clock-digits" aria-hidden="true">00:00</span>
+      </time>
+      <button class="scene-button wall-calendar" id="wall-calendar" type="button" aria-label="打开墙上的日历" aria-haspopup="dialog">
+        <span class="calendar-cover" aria-hidden="true">日历</span>
+      </button>
+      <button class="scene-button tree" id="tree" type="button" aria-label="摇一摇圣诞树" aria-expanded="false" aria-controls="apple"></button>
+      <button class="scene-button character pig" id="pig" type="button" aria-label="和秋日番互动" aria-haspopup="dialog">
+        <span class="status-bars" id="pig-bars" aria-label="秋日番的好感和冷冰冰值">
+          <span class="character-bar favor-bar"><span aria-hidden="true">♥</span><span class="bar-track"><span class="bar-fill"></span></span><span class="bar-value">0</span></span>
+          <span class="character-bar cold-bar"><span aria-hidden="true">❄</span><span class="bar-track"><span class="bar-fill"></span></span><span class="bar-value">0</span></span>
+        </span>
+        <span class="name-tag">小猪 <strong id="pig-count">0</strong></span>
+      </button>
+      <button class="scene-button character pizza" id="pizza" type="button" aria-label="和披萨no！互动" aria-haspopup="dialog">
+        <span class="status-bars" id="pizza-bars" aria-label="披萨no！的好感和冷冰冰值">
+          <span class="character-bar favor-bar"><span aria-hidden="true">♥</span><span class="bar-track"><span class="bar-fill"></span></span><span class="bar-value">0</span></span>
+          <span class="character-bar cold-bar"><span aria-hidden="true">❄</span><span class="bar-track"><span class="bar-fill"></span></span><span class="bar-value">0</span></span>
+        </span>
+        <span class="name-tag">披萨 <strong id="pizza-count">0</strong></span>
+      </button>
+      <span class="shiver shiver-pig" aria-hidden="true"></span>
+      <span class="shiver shiver-pizza" aria-hidden="true"></span>
+      <button class="scene-button apple" id="apple" type="button" aria-label="点苹果查看冷冰冰次数" aria-haspopup="dialog" hidden>
+        <span class="pixel-apple" aria-hidden="true"></span>
+      </button>
+      <button class="scene-button gift-sack" id="gift-sack" type="button" aria-label="打开圣诞老人的大袋子" aria-expanded="false" aria-controls="stocking-tray">
+        <img src="./santa-sack.webp" alt="" draggable="false">
+      </button>
+      <div class="stocking-tray" id="stocking-tray" hidden>
+        <button class="stocking" id="stocking" type="button" aria-label="拿起小圣诞袜" aria-pressed="false"><span class="pixel-stocking" aria-hidden="true"></span></button>
+        <span id="stocking-hint">拖小袜子到角色脸上，或点一下拿起。</span>
+      </div>
+      <button class="scene-button dvd-switch" id="dvd-switch" type="button" aria-pressed="false" aria-label="用 DVD 播放圣诞音乐">
+        <img src="./dvd-player.png" alt="">
+        <span class="dvd-light" aria-hidden="true"></span>
+      </button>
+      <button class="scene-button fire-switch" id="fire-switch" type="button" aria-label="开关篝火" aria-pressed="true"></button>
+      <span class="gift-effect" id="gift-effect" aria-hidden="true" hidden></span>
+      <span class="reaction" id="reaction" aria-hidden="true" hidden><img alt=""></span>
+    </section>
+
+    <p class="room-hint" id="room-hint">点角色记一笔，摇摇圣诞树，或者打开圣诞袋。</p>
+    <footer class="room-footer">
+      <p class="storage-note">记录保存在当前浏览器</p>
+      <button type="button" id="reopen-notice">使用须知</button>
+    </footer>
+  </main>
+
+  <dialog id="reasons" aria-labelledby="reason-title">
+    <header class="dialog-heading">
+      <h2 id="reason-title"></h2>
+      <button class="close" type="button" data-close aria-label="关闭">×</button>
+    </header>
+    <p id="character-favor" class="character-favor"></p>
+    <div class="reason-list" id="reason-list"></div>
+    <form id="other-reason-form" class="other-reason">
+      <label for="other-reason">其他原因</label>
+      <div>
+        <input id="other-reason" type="text" maxlength="40" placeholder="写下这次的原因" required>
+        <button type="submit">记下</button>
+      </div>
+    </form>
+    <button type="button" class="warm-button open-sack" id="open-sack">从圣诞袋拿礼物</button>
+  </dialog>
+
+  <dialog id="gifts" class="inventory-dialog" aria-labelledby="gift-title">
+    <header class="dialog-heading">
+      <h2 id="gift-title">送什么？</h2>
+      <button class="close" type="button" data-close aria-label="关闭">×</button>
+    </header>
+    <div class="inventory-tabs" id="inventory-tabs" role="group" aria-label="箱子物品分类"></div>
+    <div class="inventory-grid" id="inventory-grid" role="group" aria-label="圣诞箱里的物品"></div>
+    <footer class="inventory-footer">
+      <p id="item-selection" aria-live="polite">选一件东西</p>
+      <button class="warm-button" id="send-gift" type="button" disabled>送出 · ♥ +1</button>
+    </footer>
+  </dialog>
+
+  <dialog id="statistics" aria-labelledby="statistics-title">
+    <header class="dialog-heading">
+      <h2 id="statistics-title">冷冰冰了多少次？</h2>
+      <button class="close" type="button" data-close aria-label="关闭">×</button>
+    </header>
+    <div class="stats">
+      <div><span>今天</span><strong id="today-count">0</strong><span>次</span></div>
+      <div><span>累计</span><strong id="all-count">0</strong><span>次</span></div>
+    </div>
+    <ul class="breakdown" id="breakdown" aria-label="按原因统计"></ul>
+    <p class="score-note">每次记仇加 10 点，每天重新计分。超过 50 点，屋外就会下大雪。</p>
+  </dialog>
+  <dialog id="calendar" class="calendar-dialog" aria-labelledby="calendar-title">
+    <header class="dialog-heading">
+      <h2 id="calendar-title">冷冰冰日历</h2>
+      <button class="close" type="button" data-close aria-label="关闭">×</button>
+    </header>
+    <div class="calendar-overview">
+      <div class="calendar-date-card">
+        <span id="calendar-today" class="calendar-today"></span>
+        <strong id="calendar-date-number"></strong>
+        <span id="calendar-clock"></span>
+      </div>
+      <div class="calendar-summary-card">
+        <h3>本月汇总</h3>
+        <ul id="month-summary" class="month-summary"></ul>
+      </div>
+    </div>
+    <div class="month-navigation">
+      <button id="previous-month" type="button" aria-label="上个月">‹</button>
+      <h3 id="month-label" aria-live="polite"></h3>
+      <button id="next-month" type="button" aria-label="下个月">›</button>
+    </div>
+    <p id="month-summary" class="month-summary"></p>
+    <div class="weekdays" aria-hidden="true"><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span><span>日</span></div>
+    <div class="calendar-days" id="calendar-days" role="group" aria-label="按日期查看记录"></div>
+    <section class="calendar-detail" aria-labelledby="selected-day">
+      <h3 id="selected-day"></h3>
+      <p id="day-empty" hidden>这一天还没有冷冰冰或奖励记录。</p>
+      <ul class="breakdown" id="day-breakdown"></ul>
+      <ol class="day-activity" id="day-activity" aria-label="当天时间线"></ol>
+    </section>
+  </dialog>
+  <dialog id="notice" class="notice-dialog" aria-labelledby="notice-title">
+    <header class="dialog-heading">
+      <h2 id="notice-title">使用须知</h2>
+      <button class="close" type="button" id="close-notice" aria-label="关闭使用须知">×</button>
+    </header>
+    <ul class="notice-list">
+      <li>点角色记一笔，每次加 10 点冷冰冰值。超过 50 点，小屋外会下大雪。</li>
+      <li>点圣诞袋拿袜子送礼，每送一件，好感加一。挂历可以翻看记录。</li>
+      <li>桌上的 DVD 可以播放或停止圣诞小调。右上角的「声音」可以一键关掉屋里的所有声音。</li>
+      <li>昵称、好感和记录保存在当前浏览器。</li>
+    </ul>
+    <form id="notice-form">
+      <label class="sound-option"><input id="notice-sound" type="checkbox" checked> 进入小屋后播放环境声和按键音</label>
+      <button class="warm-button" type="submit">知道了</button>
+    </form>
+  </dialog>
+  <div class="stocking-ghost" id="stocking-ghost" hidden><span class="pixel-stocking"></span></div>
+  <div role="status" aria-live="polite" id="feedback"></div>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
